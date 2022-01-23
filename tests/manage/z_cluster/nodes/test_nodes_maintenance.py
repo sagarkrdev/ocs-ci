@@ -19,6 +19,7 @@ from ocs_ci.ocs.node import (
     get_node_objs,
     add_new_node_and_label_it,
 )
+from ocs_ci.ocs.ocp import OCP
 from ocs_ci.ocs.cluster import validate_existence_of_blocking_pdb
 from ocs_ci.framework.testlib import (
     tier1,
@@ -158,14 +159,26 @@ class TestNodesMaintenance(ManageTest):
         # Perform cluster and Ceph health checks
         self.sanity_helpers.health_check(tries=90)
 
-    @tier4
-    @tier4b
     @skipif_bm
     @pytest.mark.parametrize(
-        argnames=["node_type"],
+        argnames=["node_type", "restart_method"],
         argvalues=[
-            pytest.param(*["worker"], marks=pytest.mark.polarion_id("OCS-1292")),
-            pytest.param(*["master"], marks=pytest.mark.polarion_id("OCS-1293")),
+            pytest.param(
+                *["worker", "vm_restart"],
+                marks=[pytest.mark.polarion_id("OCS-1292"), tier4, pytest.mark.tier4b],
+            ),
+            pytest.param(
+                *["worker", "os_restart"],
+                marks=[pytest.mark.polarion_id("OCS-2752"), tier1],
+            ),
+            pytest.param(
+                *["master", "vm_restart"],
+                marks=[pytest.mark.polarion_id("OCS-1293"), tier4, pytest.mark.tier4b],
+            ),
+            pytest.param(
+                *["master", "os_restart"],
+                marks=[pytest.mark.polarion_id("OCS-2753"), tier1],
+            ),
         ],
     )
     def test_node_maintenance_restart_activate(
@@ -174,13 +187,14 @@ class TestNodesMaintenance(ManageTest):
         pvc_factory,
         pod_factory,
         node_type,
+        restart_method,
         bucket_factory,
         rgw_bucket_factory,
     ):
         """
         OCS-1292/OCS-1293:
         - Maintenance (mark as unscheduable and drain) 1 worker/master node
-        - Restart the node
+        - Restart the node - either by VM restart or OS reboot
         - Mark the node as scheduable
         - Check cluster and Ceph health
         - Check cluster functionality by creating and deleting resources
@@ -203,8 +217,18 @@ class TestNodesMaintenance(ManageTest):
         # Maintenance the node (unschedule and drain). The function contains logging
         drain_nodes([typed_node_name])
 
-        # Restarting the node
-        nodes.restart_nodes(nodes=typed_nodes, wait=False)
+        if restart_method == "vm_restart":
+            # Restarting the VM
+            nodes.restart_nodes(nodes=typed_nodes, wait=False)
+        elif restart_method == "os_restart":
+            # Restarting the node via the OS
+            node = OCP(kind="node")
+            try:
+                node.exec_oc_debug_cmd(
+                    node=typed_node_name, cmd_list=["reboot"], timeout=10
+                )
+            except TimeoutExpired:
+                log.info(f"Node {typed_node_name} got rebooted")
 
         try:
             wait_for_nodes_status(
@@ -225,6 +249,7 @@ class TestNodesMaintenance(ManageTest):
         wait_for_nodes_status(
             node_names=[typed_node_name],
             status=constants.NODE_READY_SCHEDULING_DISABLED,
+            timeout=420,
         )
 
         # Mark the node back to schedulable
@@ -233,7 +258,7 @@ class TestNodesMaintenance(ManageTest):
         # Check cluster and Ceph health and checking basic cluster
         # functionality by creating resources (pools, storageclasses,
         # PVCs, pods - both CephFS and RBD), run IO and delete the resources
-        self.sanity_helpers.health_check()
+        self.sanity_helpers.health_check(tries=60)
         self.sanity_helpers.create_resources(
             pvc_factory, pod_factory, bucket_factory, rgw_bucket_factory
         )
