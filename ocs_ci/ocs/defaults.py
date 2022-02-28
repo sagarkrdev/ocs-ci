@@ -106,3 +106,17 @@ VAULT_TENANT_SA_CONNECTION_CONF = {
         "vaultBackend": "kv-v2",
     }
 }
+# Hpcs related defaults
+#
+# To be used for adding additional hpcs connections
+# to csi-kms-connection-details resource
+HPCS_CSI_CONNECTION_CONF = {
+    "1-hpcs": {
+        "KMS_PROVIDER": "ibmkeyprotect",
+        "KMS_SERVICE_NAME": "1-hpcs",
+        "IBM_KP_SERVICE_INSTANCE_ID": "",
+        "IBM_KP_SECRET_NAME": "ibm-kp-kms-test-secret",
+        "IBM_KP_BASE_URL": "",
+        "IBM_KP_TOKEN_URL": "https://iam.cloud.ibm.com/oidc/token",
+    }
+}
