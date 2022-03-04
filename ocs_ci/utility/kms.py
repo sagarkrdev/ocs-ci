@@ -1139,6 +1139,22 @@ class HPCS(KMS):
             timeout=300,
         )
 
+    def delete_resource(self, resource_name, resource_type, resource_namespace):
+        """
+        Given resource type, resource name and namespace, this function will
+        delete oc resource
+
+        Args:
+            resource_name : name of the resource
+            resource_type: type of resource such as secret
+            resource_namespace: namespace in which resource is present
+
+        """
+        run_cmd(
+            f"oc delete {resource_type} {resource_name} -n {resource_namespace}",
+            timeout=300,
+        )
+
     def gather_hpcs_config(self):
         """
         This function populates the hpcs configuration

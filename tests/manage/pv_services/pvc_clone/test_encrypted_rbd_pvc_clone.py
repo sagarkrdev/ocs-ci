@@ -51,6 +51,12 @@ class TestEncryptedRbdClone(ManageTest):
 
     """
 
+    # set the KMS provider based on platform
+    # if config.ENV_DATA["platform"].lower() == constants.IBM_PLATFORM:
+    kmsprovider = constants.HPCS_KMS_PROVIDER
+    # else:
+    #   kmsprovider = constants.VAULT_KMS_PROVIDER
+
     @pytest.fixture(autouse=True)
     def setup(
         self,
