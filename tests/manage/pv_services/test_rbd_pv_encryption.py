@@ -48,6 +48,12 @@ class TestRbdPvEncryption(ManageTest):
 
     """
 
+    # set the KMS provider based on KMS_PROVIDER env value.
+    # if config.ENV_DATA["KMS_PROVIDER"].lower() == constants.HPCS_KMS_PROVIDER:
+    #   kmsprovider = constants.HPCS_KMS_PROVIDER
+    # else:
+    #   kmsprovider = constants.VAULT_KMS_PROVIDER
+
     @pytest.fixture(autouse=True)
     def setup(
         self,
@@ -76,11 +82,6 @@ class TestRbdPvEncryption(ManageTest):
         Test to verify creation and deletion of encrypted RBD PVC
 
         """
-        # set the KMS provider based on platform
-        # if config.ENV_DATA["platform"].lower() == constants.IBM_PLATFORM:
-        self.kmsprovider = constants.HPCS_KMS_PROVIDER
-        # else:
-        #   self.kmsprovider = constants.VAULT_KMS_PROVIDER
         # Create a project
         proj_obj = project_factory()
 
