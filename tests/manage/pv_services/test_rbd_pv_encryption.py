@@ -22,16 +22,16 @@ log = logging.getLogger(__name__)
 
 # Set the arg values based on KMS provider.
 # if config.ENV_DATA["KMS_PROVIDER"].lower() == constants.HPCS_KMS_PROVIDER:
-kmsprovider = constants.HPCS_KMS_PROVIDER
-argvalues = [
-    pytest.param("v1", kmsprovider),
-]
-# else:
-#   kmsprovider = constants.VAULT_KMS_PROVIDER
-#  argvalues=[
-#     pytest.param("v1", kmsprovider, marks=pytest.mark.polarion_id("OCS-2585")),
-#    pytest.param("v2", kmsprovider, marks=pytest.mark.polarion_id("OCS-2592")),
+# kmsprovider = constants.HPCS_KMS_PROVIDER
+# argvalues = [
+#    pytest.param("v1", kmsprovider),
 # ]
+# else:
+kmsprovider = constants.VAULT_KMS_PROVIDER
+argvalues = [
+    pytest.param("v1", kmsprovider, marks=pytest.mark.polarion_id("OCS-2585")),
+    pytest.param("v2", kmsprovider, marks=pytest.mark.polarion_id("OCS-2592")),
+]
 
 
 @pytest.mark.parametrize(
@@ -56,6 +56,7 @@ class TestRbdPvEncryption(ManageTest):
     @pytest.fixture(autouse=True)
     def setup(
         self,
+        kv_version,
         pv_encryption_kms_setup_factory,
     ):
         """
@@ -63,7 +64,7 @@ class TestRbdPvEncryption(ManageTest):
 
         """
         log.info("Setting up csi-kms-connection-details configmap")
-        self.kms = pv_encryption_kms_setup_factory()
+        self.kms = pv_encryption_kms_setup_factory(kv_version)
         log.info("csi-kms-connection-details setup successful")
 
     @tier1

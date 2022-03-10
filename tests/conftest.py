@@ -4152,9 +4152,9 @@ def pv_encryption_kms_setup_factory(request):
 
     # set the KMS provider based on KMS_PROVIDER env value.
     # if config.ENV_DATA["KMS_PROVIDER"].lower() == constants.HPCS_KMS_PROVIDER:
-    return pv_encryption_hpcs_setup_factory(request)
+    # return pv_encryption_hpcs_setup_factory(request)
     # else:
-    #   return pv_encryption_vault_setup_factory(request)
+    return pv_encryption_vault_setup_factory(request)
 
 
 def pv_encryption_vault_setup_factory(request):
@@ -4244,9 +4244,10 @@ def pv_encryption_hpcs_setup_factory(request):
     """
     hpcs = KMS.Hpcs()
 
-    def factory():
+    def factory(kv_version):
         """
-
+        Args:
+            kv_version(str): KV version to be used, either v1 or v2
         Returns:
             object: Hpcs(KMS) object
 

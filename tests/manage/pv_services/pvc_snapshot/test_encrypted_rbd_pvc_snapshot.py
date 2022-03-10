@@ -27,16 +27,16 @@ log = logging.getLogger(__name__)
 
 # Set the arg values based on KMS provider.
 # if config.ENV_DATA["KMS_PROVIDER"].lower() == constants.HPCS_KMS_PROVIDER:
-kmsprovider = constants.HPCS_KMS_PROVIDER
-argvalues = [
-    pytest.param("v1", kmsprovider),
-]
-# else:
-#   kmsprovider = constants.VAULT_KMS_PROVIDER
-#  argvalues=[
-#    pytest.param("v1", kmsprovider, marks=pytest.mark.polarion_id("OCS-2612")),
-#    pytest.param("v2", kmsprovider, marks=pytest.mark.polarion_id("OCS-2613")),
+# kmsprovider = constants.HPCS_KMS_PROVIDER
+# argvalues = [
+#    pytest.param("v1", kmsprovider),
 # ]
+# else:
+kmsprovider = constants.VAULT_KMS_PROVIDER
+argvalues = [
+    pytest.param("v1", kmsprovider, marks=pytest.mark.polarion_id("OCS-2612")),
+    pytest.param("v2", kmsprovider, marks=pytest.mark.polarion_id("OCS-2613")),
+]
 
 
 @pytest.mark.parametrize(
@@ -71,7 +71,7 @@ class TestEncryptedRbdBlockPvcSnapshot(ManageTest):
         """
 
         log.info("Setting up csi-kms-connection-details configmap")
-        self.kms = pv_encryption_kms_setup_factory()
+        self.kms = pv_encryption_kms_setup_factory(kv_version)
         log.info("csi-kms-connection-details setup successful")
 
         # Create a project
