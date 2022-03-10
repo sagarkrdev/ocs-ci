@@ -48,12 +48,6 @@ class TestRbdPvEncryption(ManageTest):
 
     """
 
-    # set the KMS provider based on KMS_PROVIDER env value.
-    # if config.ENV_DATA["KMS_PROVIDER"].lower() == constants.HPCS_KMS_PROVIDER:
-    #   kmsprovider = constants.HPCS_KMS_PROVIDER
-    # else:
-    #   kmsprovider = constants.VAULT_KMS_PROVIDER
-
     @pytest.fixture(autouse=True)
     def setup(
         self,
