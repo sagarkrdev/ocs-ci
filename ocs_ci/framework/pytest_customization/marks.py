@@ -237,7 +237,7 @@ kms_config_required = pytest.mark.skipif(
             is not None,
         )
     ),
-    load_auth_config().get("hpcs", {}).get("IBM_KP_SERVICE_INSTANCE_ID") is None,
+    # load_auth_config().get("hpcs", {}).get("IBM_KP_SERVICE_INSTANCE_ID") is None,
     reason="KMS config not found in auth.yaml",
 )
 
