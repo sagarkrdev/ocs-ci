@@ -16,6 +16,7 @@ ENV_DATA:
   worker_replicas: 3
   master_replicas: 3
   worker_instance_type: 'm5.4xlarge'
+  KMS_PROVIDER: hpcs
 REPORTING:
   polarion:
     deployment_id: 'OCS-1410'
