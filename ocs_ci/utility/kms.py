@@ -119,8 +119,8 @@ class Vault(KMS):
         self.update_vault_env_vars()
         get_vault_cli()
         self.vault_unseal()
-        if config.ENV_DATA.get("use_vault_namespace"):
-            self.vault_create_namespace()
+        # if config.ENV_DATA.get("use_vault_namespace"):
+        #    self.vault_create_namespace()
         self.vault_create_backend_path()
         self.create_ocs_vault_resources()
 
@@ -142,6 +142,7 @@ class Vault(KMS):
             self.vault_tls_server = self.vault_conf["VAULT_TLS_SERVER_NAME"]
         self.vault_root_token = self.vault_conf["VAULT_ROOT_TOKEN"]
 
+    '''
     def vault_create_namespace(self, namespace=None):
         """
         Create a vault namespace if it doesn't exists
@@ -164,6 +165,7 @@ class Vault(KMS):
         if not self.vault_namespace_exists(self.vault_namespace):
             self.create_namespace(self.vault_namespace)
         os.environ["VAULT_NAMESPACE"] = self.vault_namespace
+    '''
 
     def vault_namespace_exists(self, vault_namespace):
         """
@@ -205,6 +207,7 @@ class Vault(KMS):
                 return True
         return False
 
+    '''
     def create_namespace(self, vault_namespace):
         """
         Create a vault namespace
@@ -229,6 +232,7 @@ class Vault(KMS):
         else:
             logger.error(f"Namespace {vault_namespace} not found in the list")
             raise VaultOperationError()
+    '''
 
     def update_vault_env_vars(self):
         """
@@ -718,9 +722,9 @@ class Vault(KMS):
 
         self.gather_init_vault_conf()
         self.update_vault_env_vars()
-        if config.ENV_DATA.get("use_vault_namespace"):
-            self.get_vault_namespace()
-            os.environ["VAULT_NAMESPACE"] = self.vault_namespace
+        # if config.ENV_DATA.get("use_vault_namespace"):
+        #    self.get_vault_namespace()
+        #    os.environ["VAULT_NAMESPACE"] = self.vault_namespace
         self.get_vault_backend_path()
         kvlist = vault_kv_list(self.vault_backend_path)
 
@@ -788,7 +792,7 @@ class Vault(KMS):
             buf["VAULT_CACERT"] = get_default_if_keyval_empty(
                 config.ENV_DATA, "VAULT_CACERT", defaults.VAULT_DEFAULT_CA_CERT
             )
-            buf["VAULT_NAMESPACE"] = self.vault_namespace
+            # buf["VAULT_NAMESPACE"] = self.vault_namespace
             buf["VAULT_TOKEN_NAME"] = get_default_if_keyval_empty(
                 config.ENV_DATA,
                 "VAULT_TOKEN_NAME",
@@ -811,8 +815,8 @@ class Vault(KMS):
             )
             buf["vaultClientCertFromSecret"] = self.client_cert_name
             buf["vaultClientCertKeyFromSecret"] = self.client_key_name
-            if self.vault_namespace:
-                buf["vaultNamespace"] = self.vault_namespace
+            # if self.vault_namespace:
+            #    buf["vaultNamespace"] = self.vault_namespace
             if self.vault_kube_auth_path:
                 buf["vaultAuthPath"] = self.vault_kube_auth_path
             else:
