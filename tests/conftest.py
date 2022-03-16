@@ -4186,7 +4186,7 @@ def pv_encryption_vault_setup_factory(request):
 
         # Create vault namespace, backend path and policy in vault
         vault_resource_name = create_unique_resource_name("test", "vault")
-        vault.vault_create_namespace(namespace=vault_resource_name)
+        # vault.vault_create_namespace(namespace=vault_resource_name)
         vault.vault_create_backend_path(
             backend_path=vault_resource_name, kv_version=kv_version
         )
@@ -4205,7 +4205,7 @@ def pv_encryption_vault_setup_factory(request):
                 old_key = key
             vdict[new_kmsid] = vdict.pop(old_key)
             vdict[new_kmsid]["VAULT_BACKEND_PATH"] = vault_resource_name
-            vdict[new_kmsid]["VAULT_NAMESPACE"] = vault_resource_name
+            # vdict[new_kmsid]["VAULT_NAMESPACE"] = vault_resource_name
             vault.kmsid = vault_resource_name
             if kv_version == "v1":
                 vdict[new_kmsid]["VAULT_BACKEND"] = "kv"
@@ -4231,7 +4231,7 @@ def pv_encryption_vault_setup_factory(request):
             KMS.remove_kmsid(vault.kmsid)
         vault.remove_vault_backend_path()
         vault.remove_vault_policy()
-        vault.remove_vault_namespace()
+        # vault.remove_vault_namespace()
 
     request.addfinalizer(finalizer)
     return factory
@@ -4530,8 +4530,8 @@ def vault_tenant_sa_setup_factory(request):
         # Create vault namespace, backend path and policy in vault
         vault_resource_name = create_unique_resource_name("test", "vault")
 
-        if use_namespace:
-            vault.vault_create_namespace(namespace=vault_resource_name)
+        # if use_namespace:
+        #    vault.vault_create_namespace(namespace=vault_resource_name)
 
         vault.vault_create_backend_path(
             backend_path=vault_resource_name, kv_version=kv_version
@@ -4599,8 +4599,8 @@ def vault_tenant_sa_setup_factory(request):
         """
         vault.remove_vault_backend_path()
         vault.remove_vault_policy()
-        if "VAULT_NAMESPACE" in os.environ:
-            vault.remove_vault_namespace()
+        # if "VAULT_NAMESPACE" in os.environ:
+        #    vault.remove_vault_namespace()
         KMS.remove_token_reviewer_resources()
         if len(KMS.get_encryption_kmsid()) > 1:
             KMS.remove_kmsid(vault.kmsid)
