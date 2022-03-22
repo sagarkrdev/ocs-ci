@@ -1,6 +1,7 @@
 ---
 DEPLOYMENT:
   allow_lower_instance_requirements: false
+  kms_deployment: true
 ENV_DATA:
   platform: 'aws'
   deployment_type: 'ipi'
@@ -16,6 +17,10 @@ ENV_DATA:
   worker_replicas: 3
   master_replicas: 3
   worker_instance_type: 'm5.4xlarge'
+  encryption_at_rest: true
+  hpcs_deploy_mode: external
+  KMS_PROVIDER: hpcs
+  KMS_SERVICE_NAME: hpcs
 REPORTING:
   polarion:
     deployment_id: 'OCS-1410'
